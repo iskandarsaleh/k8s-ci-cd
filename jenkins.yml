@@ -6,30 +6,59 @@ metadata:
   labels: 
     name: "kubernetes-plugin"
 
-# jenkins
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: jenkins-home
+  labels:
+    type: local
+  namespace: kubernetes-plugin
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/jenkins_home/"
 
 ---
-apiVersion: "apps/v1beta1"
-kind: "StatefulSet"
-metadata: 
-  name: "jenkins"
-  namespace: "kubernetes-plugin"
-  labels: 
-    name: "jenkins"
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-claim
+  namespace: kubernetes-plugin
 spec:
-  serviceName: "jenkins"
-  replicas: 1
-  template: 
-    metadata: 
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: "kubernetes-plugin"
+  labels:
       name: "jenkins"
-      labels: 
-        name: "jenkins"
-    spec: 
-      terminationGracePeriodSeconds: 10
-      containers: 
+spec:
+  replicas: 1
+  strategy:
+        type: Recreate
+  template:
+    metadata:
+          name: "jenkins"
+          labels:
+            name: "jenkins"
+    spec:
+      containers:
         - name: "jenkins"
-          image: "jenkinsci/jenkins:2.60.1"
-          ports: 
+          image: "10.21.154.64:30400/jenkins:latest"
+          securityContext:
+                    privileged: true
+          ports:
             - containerPort: 8080
             - containerPort: 50000
           resources:
@@ -42,28 +71,24 @@ spec:
           env:
             - name: JAVA_OPTS
               value: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85"
-          volumeMounts: 
+          volumeMounts:
             - name: "jenkins-home"
               mountPath: "/var/jenkins_home"
+            - name: docker
+              mountPath: /var/run/docker.sock
           livenessProbe:
             httpGet:
               path: /login
               port: 8080
             initialDelaySeconds: 60
             timeoutSeconds: 5
-      securityContext:
-        fsGroup: 1000
-  volumeClaimTemplates:
-  - metadata:
-      name: jenkins-home
-      # annotations:
-      #   volume.beta.kubernetes.io/storage-class: anything
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
-
+      volumes:
+        - name: docker
+          hostPath:
+            path: /var/run/docker.sock
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkins-claim
 ---
 apiVersion: "v1"
 kind: "Service"
