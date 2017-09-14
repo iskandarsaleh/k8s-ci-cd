@@ -5,3 +5,5 @@
 .classpath
 target/
 **/*.class
+**/node_modules/
+**/dist/
