@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>szp.rafael.k8s</groupId>
-    <artifactId>kubeclient</artifactId>
+    <artifactId>kube-deployer</artifactId>
     <packaging>jar</packaging>
 
     <properties>

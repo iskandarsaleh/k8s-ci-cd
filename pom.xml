@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>kubeclient</module>
+    <module>kube-deployer</module>
     <module>hello</module>
   </modules>
 

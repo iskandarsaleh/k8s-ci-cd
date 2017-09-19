@@ -22,6 +22,15 @@ const environment = process.env.NODE_ENV === 'production' ? 'production' : 'deve
 console.log(`Environment: [${environment}]`);
 console.log(`\tAUTH_URL: ${ENV_CONFIG[environment].authUrl},\n\tSERVER_URL: ${ENV_CONFIG[environment].serverUrl},\n\tAPI_URL: ${ENV_CONFIG[environment].apiUrl}`);
 
+let uglify;
+if(process.env.NODE_ENV === 'production'){
+    uglify = new webpack.optimize.UglifyJsPlugin();
+}else{
+    uglify = new webpack.optimize.UglifyJsPlugin({
+        test: 'no-files-to-be-uglified'
+    });
+}
+
 module.exports = {
     context: __dirname + "/src",
     entry: {
@@ -57,9 +66,7 @@ module.exports = {
             'CLIENT_ID': ENV_CONFIG.client_id,
             'CLIENT_SECRET': ENV_CONFIG.client_secret,
             'ENVIRONMENT': JSON.stringify(environment),
-            'process.env': {
-                NODE_ENV: JSON.stringify(environment)
-            }
+            'process.env.NODE_ENV': JSON.stringify(environment)
         }),
         new CopyWebpackPlugin([
             {
@@ -68,7 +75,7 @@ module.exports = {
         ],{
             debug: 'info'
         }),
-        new webpack.optimize.UglifyJsPlugin()
+        uglify
     ],
     module:{
         rules:[
@@ -94,7 +101,7 @@ module.exports = {
             },
             {
                 test: /\.woff|.woff2|.ttf|.eot|.svg|.png|.jpg*.*$/,
-                use:[{loader: 'file'}]
+                use:[{loader: 'file-loader'}]
             },
             {
                 test: /\.json$/,
