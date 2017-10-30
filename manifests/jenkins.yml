@@ -21,6 +21,12 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/var/jenkins_home/"
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: jenkins-claim
+    namespace: kubernetes-plugin
+
 
 ---
 kind: PersistentVolumeClaim
