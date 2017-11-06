@@ -5,13 +5,16 @@
 
 Master:
   Name: jenkins-master
-  Image: "jenkinsci/jenkins"
-  ImageTag: "2.67"
+  #Image: "jenkinsci/jenkins"
+  #ImageTag: "2.67"
+  Image: "jenkins/jenkins"
+  ImageTag: "2.87"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
   AdminUser: admin
 # AdminPassword: <defaults to random>
+  AdminPassword: admin
   Cpu: "200m"
   Memory: "256Mi"
 # Set min/max heap here if needed with:
@@ -21,7 +24,7 @@ Master:
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
-  ServiceType: LoadBalancer
+  ServiceType: NodePort
 # Master Service annotations
   ServiceAnnotations: {}
     #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
@@ -48,6 +51,9 @@ Master:
       - workflow-job:2.13
       - credentials-binding:1.12
       - git:3.4.0
+      - maven-plugin:3.0
+      - artifactory:2.13.1
+      - pipeline-utility-steps:1.5.1
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -75,8 +81,10 @@ Master:
 
 Agent:
   Enabled: true
-  Image: jenkinsci/jnlp-slave
-  ImageTag: 2.62
+  #Image: jenkinsci/jnlp-slave
+  #ImageTag: 2.62
+  Image: jmaitrehenry/docker-jenkins-jnlp
+  ImageTag: latest
   Component: "jenkins-slave"
   Privileged: false
   Cpu: "200m"
@@ -88,9 +96,9 @@ Agent:
   # Configure the attributes as they appear in the corresponding Java class for that type
   # https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
   volumes:
-  # - type: Secret
+  # - type: secret
   #   secretName: mysecret
-  #   mountPath: /var/myapp/mysecret
+  #   mountPath: /app/myapp/secret
   NodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
@@ -108,6 +116,7 @@ Persistence:
   # StorageClass:
   AccessMode: ReadWriteOnce
   Size: 8Gi
+  hostPath: /dados/jenkins
   volumes:
 #  - name: nothing
 #    emptyDir: {}

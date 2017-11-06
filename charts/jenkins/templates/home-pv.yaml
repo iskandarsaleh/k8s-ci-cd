@@ -1,0 +1,20 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-jenkins
+  labels:
+    type: local
+  namespace: {{ .Release.Namespace }}
+spec:
+  capacity:
+    storage: {{ .Values.Persistence.Size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.Persistence.hostPath }}
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: {{ template "fullname" . }}
+    namespace: {{ .Release.Namespace }}
