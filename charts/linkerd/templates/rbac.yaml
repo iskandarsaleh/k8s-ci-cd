@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-role-binding
+  labels:
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.rbac.roleRef }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-{{ .Values.rbac.serviceAccountName }}
+  namespace: {{ .Release.Namespace }}

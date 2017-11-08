@@ -54,7 +54,7 @@ Master:
       - maven-plugin
       - artifactory
       - pipeline-utility-steps
-      - simple-theme-plugin 
+      - simple-theme-plugin:0.3
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"

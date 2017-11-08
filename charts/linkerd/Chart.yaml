@@ -1,0 +1,4 @@
+apiVersion: v1
+description: k8s-hello kubernetest linkerd chart
+name: linkerd
+version: 0.1.0

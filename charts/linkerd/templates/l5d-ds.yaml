@@ -1,0 +1,41 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ .Release.Name }}-l5d
+  name: {{ .Release.Name }}-l5d
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-l5d
+    spec:
+      volumes:
+      - name: {{ .Release.Name }}-l5d-config 
+        configMap:
+          name: {{ .Release.Name }}-l5d-config
+      serviceAccountName: {{ .Release.Name }}-{{ .Chart.Name }}-{{ .Values.rbac.serviceAccountName }}
+      containers:
+      - name: {{ .Release.Name }}-l5d
+        image: buoyantio/linkerd:1.2.0
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args:
+        - /io.buoyant/linkerd/config/config.yaml
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 9990
+        volumeMounts:
+        - name: {{ .Release.Name }}-l5d-config
+          mountPath: "/io.buoyant/linkerd/config"
+          readOnly: true
+
+      - name: kubectl
+        image: buoyantio/kubectl:v1.4.0
+        args: ["proxy", "-p", "8001"]
