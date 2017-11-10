@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: test
+  labels:
+      name: "test"
+spec:
+  replicas: 2
+  strategy:
+        type: Recreate
+  template:
+    metadata:
+          name: "test"
+          labels:
+            name: "test"
+    spec:
+      containers:
+        - name: "test"
+          image: "yauritux/busybox-curl"
+          command:
+            - sleep
+            - "3600"

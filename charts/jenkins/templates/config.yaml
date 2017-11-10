@@ -158,9 +158,3 @@ data:
 {{- end }}
 {{- end }}
 {{- end -}}
-  org.codefirst.SimpleThemeDecorator.xml: |-
-    <?xml version='1.0' encoding='UTF-8'?>
-    <org.codefirst.SimpleThemeDecorator plugin="simple-theme-plugin@0.3">
-      <cssUrl>https://cdn.rawgit.com/afonsof/jenkins-material-theme/gh-pages/dist/material-teal.css</cssUrl>
-      <jsUrl></jsUrl>
-    </org.codefirst.SimpleThemeDecorator>                         

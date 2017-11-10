@@ -11,5 +11,6 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
     name: {{ .Values.service.name }}
+    nodePort: 30500
   selector:
     app: {{ template "fullname" . }}

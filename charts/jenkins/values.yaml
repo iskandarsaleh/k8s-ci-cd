@@ -8,7 +8,7 @@ Master:
   #Image: "jenkinsci/jenkins"
   #ImageTag: "2.67"
   Image: "jenkins/jenkins"
-  ImageTag: "2.87"
+  ImageTag: "2.89"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -31,6 +31,7 @@ Master:
 # Used to create Ingress record (should used with ServiceType: ClusterIP)
 # HostName: jenkins.cluster.local
 # NodePort: <to set explicitly, choose port between 30000-32767
+  NodePort: 30100
   ContainerPort: 8080
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
@@ -67,7 +68,8 @@ Master:
 # Node labels and tolerations for pod assignment
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-  NodeSelector: {}
+  NodeSelector: 
+    papel: master
   Tolerations: {}
 
   Ingress:

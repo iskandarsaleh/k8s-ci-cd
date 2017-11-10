@@ -24,3 +24,8 @@ data:
 
     usage:
       orgId: {{ .Release.Name }}-linkerd-examples-ingress
+    
+    telemetry:
+      - kind: io.l5d.prometheus
+      - kind: io.l5d.recentRequests
+        sampleRate: 0.25

@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: {{ .Release.Name }}-linkerd-viz
+  labels:
+    name: {{ .Release.Name }}-linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    name: {{ .Release.Name }}-linkerd-viz
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}-linkerd-viz
+    spec:
+      serviceAccountName: {{ .Release.Name }}-{{ .Chart.Name }}-{{ .Values.rbac.serviceAccountName }}
+      containers:
+      - name: {{ .Release.Name }}-linkerd-viz
+        image: buoyantio/linkerd-viz:0.1.5
+        args: ["k8s"]
+        imagePullPolicy: Always
+        env:
+        - name: PUBLIC_PORT
+          value: "3000"
+        - name: STATS_PORT
+          value: "9191"
+        - name: SCRAPE_INTERVAL
+          value: "30s"
+        ports:
+        - name: grafana
+          containerPort: 3000
+        - name: prometheus
+          containerPort: 9191
+
+      - name: kubectl
+        image: lachlanevenson/k8s-kubectl:v1.6.12
+        args:
+        - "proxy"
+        - "-p"
+        - "8001"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-linkerd-viz
+  labels:
+    name: {{ .Release.Name }}-linkerd-viz
+spec:
+  type: NodePort
+  ports:
+  - name: grafana
+    port: 80
+    targetPort: 3000
+  - name: prometheus
+    port: 9191
+    targetPort: 9191
+  selector:
+    name: {{ .Release.Name }}-linkerd-viz

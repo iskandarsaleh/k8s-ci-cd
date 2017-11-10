@@ -75,6 +75,8 @@ spec:
         app: registry
         tier: registry
     spec:
+      nodeSelector:
+        papel: master
       containers:
       - image: registry:2
         name: registry

@@ -11,6 +11,8 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      nodeSelector:
+        papel: master
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
