@@ -21,6 +21,17 @@ data:
           ip: 0.0.0.0
           clearContext: true
       dtab: /svc => /#/io.l5d.k8s
+      service:
+        totalTimeoutMs: 30000
+        retries:
+          budget:
+            minRetriesPerSec: 5
+            percentCanRetry: 0.5
+            ttlSecs: 15
+          backoff:
+            kind: jittered
+            minMs: 10
+            maxMs: 30000
 
     usage:
       orgId: {{ .Release.Name }}-linkerd-examples-ingress
