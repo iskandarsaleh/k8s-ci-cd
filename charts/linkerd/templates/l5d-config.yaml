@@ -21,17 +21,32 @@ data:
           ip: 0.0.0.0
           clearContext: true
       dtab: /svc => /#/io.l5d.k8s
+      client:
+        kind: io.l5d.global
+        loadBalancer:
+          kind: ewma
+        requeueBudget: 
+          percentCanRetry: 0.2
+        failureAccrual:
+          kind: io.l5d.consecutiveFailures
+          failures: 3
+          backoff:
+            kind: jittered
+            minMs: 10000
+            maxMs: 20000
       service:
-        totalTimeoutMs: 30000
+        totalTimeoutMs: 60000
+        responseClassifier:
+          kind: io.l5d.http.retryableRead5XX
         retries:
           budget:
             minRetriesPerSec: 5
             percentCanRetry: 0.5
-            ttlSecs: 15
+            ttlSecs: 5
           backoff:
             kind: jittered
             minMs: 10
-            maxMs: 30000
+            maxMs: 10000
 
     usage:
       orgId: {{ .Release.Name }}-linkerd-examples-ingress
