@@ -4,3 +4,9 @@ rbac:
   apiVersion: v1beta1
   # Cluster role reference
   roleRef: cluster-admin
+linkerd:
+  image:
+    tag: 1.3.2
+kubectl:
+  image:
+    tag: v1.6.2

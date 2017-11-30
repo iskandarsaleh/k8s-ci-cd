@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}-{{ .Chart.Name }}-{{ .Values.rbac.serviceAccountName }}
       containers:
       - name: {{ .Release.Name }}-l5d
-        image: buoyantio/linkerd:1.2.0
+        image: buoyantio/linkerd:{{ .Values.linkerd.image.tag }}
         env:
         - name: POD_IP
           valueFrom:
@@ -37,5 +37,5 @@ spec:
           readOnly: true
 
       - name: kubectl
-        image: buoyantio/kubectl:v1.4.0
+        image: buoyantio/kubectl:{{ .Values.kubectl.image.tag }}
         args: ["proxy", "-p", "8001"]
