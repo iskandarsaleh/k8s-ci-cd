@@ -1,0 +1,4 @@
+fluentd:
+  elasticsearch:
+    host: 10.21.152.133
+    port: 9200
